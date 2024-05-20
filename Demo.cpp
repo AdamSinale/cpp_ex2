@@ -22,7 +22,7 @@ int main()
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g1.loadGraph(graph); // Load the graph to the object.
+    g1.loadGraph(graph, 0); // Load the graph to the object.
 
     cout<<g1; // Should print the matrix of the graph: [0, 1, 0], [1, 0, 1], [0, 1, 0]
 
@@ -32,7 +32,7 @@ int main()
         {1, 0, 2},
         {1, 2, 0}};
     ariel::Graph g2;
-    g2.loadGraph(weightedGraph); // Load the graph to the object.
+    g2.loadGraph(weightedGraph, 0); // Load the graph to the object.
 
     ariel::Graph g3 = g1 + g2; // Add the two graphs together.
     cout<<g3;           // Should print the matrix of the graph: [0, 2, 1], [2, 0, 3], [1, 3, 0]
@@ -52,7 +52,7 @@ int main()
         {0, 0, 1, 0, 1},
         {1, 0, 0, 1, 0}};
     ariel::Graph g5;
-    g5.loadGraph(graph2); // Load the graph to the object.
+    g5.loadGraph(graph2, 0); // Load the graph to the object.
     try
     {
         ariel::Graph g6 = g5 * g1; // Multiply the two graphs together.

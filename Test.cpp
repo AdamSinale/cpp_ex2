@@ -14,13 +14,13 @@ TEST_CASE("Test graph addition")
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g1.loadGraph(graph);
+    g1.loadGraph(graph, 0);
     ariel::Graph g2;
     vector<vector<int>> weightedGraph = {
         {0, 1, 1},
         {1, 0, 2},
         {1, 2, 0}};
-    g2.loadGraph(weightedGraph);
+    g2.loadGraph(weightedGraph, 0);
     ariel::Graph g3 = g1 + g2;
     vector<vector<int>> expectedGraph = {
         {0, 2, 1},

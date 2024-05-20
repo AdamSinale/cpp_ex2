@@ -24,5 +24,22 @@ namespace ariel {
         int check_borders(unsigned int start, unsigned int end) const{ return start>=0 && end < getNumV(); }
         void loadGraph(const vector<vector<int>> graph, int isDirected);
         void printGraph();
+        Graph& operator+(const Graph& other);
+        Graph& operator+=(const Graph& other);
+        Graph operator+() const;
+        Graph& operator-(const Graph& other);
+        Graph& operator-=(const Graph& other);
+        Graph operator-() const;
+        int contains(const Graph& contained) const;
+        int operator>(const Graph& other);
+        int operator>=(const Graph& other);
+        int operator<(const Graph& other);
+        int operator<=(const Graph& other);
+        int operator=(const Graph& other);
+        int operator!=(const Graph& other);
+        Graph& operator++();
+        Graph& operator--();
+        Graph& operator*(int a);
+        Graph operator*(const Graph& other);
     };
 }
