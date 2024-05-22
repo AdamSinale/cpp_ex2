@@ -19,12 +19,12 @@ TEST_CASE("Test graph not/equal")
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g1.loadGraph(graph1, 1);
+    g1.loadGraph(graph1, 0);
     graph2 = {
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g2.loadGraph(graph2, 1);
+    g2.loadGraph(graph2, 0);
     CHECK((g1 == g2) == TRUE);
     CHECK((g1 != g2) == FALSE);
     graph2 = {
@@ -39,23 +39,52 @@ TEST_CASE("Test graph not/equal")
     CHECK((g1 <= g2) == TRUE);
     CHECK((g1 != g2) == FALSE);
     graph2 = {
-        {0, -1, 0},
-        {1, 0, 1},
-        {0, 1, 0}};
+        {0, 0, 0},
+        {-1, 0, -1},
+        {0, -1, 0}};
     g2.loadGraph(graph2, 1);
-    CHECK((g1 == g2) == TRUE);
-    CHECK((g1 > g2) == FALSE);
+    CHECK((g1 == g2) == FALSE);
+    CHECK((g1 > g2) == TRUE);
     CHECK((g1 >= g2) == TRUE);
     CHECK((g1 < g2) == FALSE);
-    CHECK((g1 <= g2) == TRUE);
-    CHECK((g1 != g2) == FALSE);
-    graph2 = {
+    CHECK((g1 <= g2) == FALSE);
+    CHECK((g1 != g2) == TRUE);
+}
+TEST_CASE("Test graph bigger/smaller")
+{
+    graph1 = {
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g2.loadGraph(graph2, 0);
-    CHECK_THROWS(g1 == g2);
-    CHECK_THROWS(g1 != g2);
+    g1.loadGraph(graph1, 1);
+    graph2 = {
+        {0, 0, 0},
+        {2, 0, -1},
+        {0, 1, 0}};
+    g2.loadGraph(graph2, 1);
+    CHECK((g1 > g2) == TRUE);
+    CHECK((g1 >= g2) == TRUE);
+    CHECK((g1 < g2) == FALSE);
+    CHECK((g1 <= g2) == FALSE);
+    graph2 = {
+        {0, 1, 1},
+        {0, 0, 1},
+        {0, 0, 0}};
+    g2.loadGraph(graph2, 1);
+    CHECK((g1 > g2) == TRUE);
+    CHECK((g1 >= g2) == TRUE);
+    CHECK((g1 < g2) == FALSE);
+    CHECK((g1 <= g2) == FALSE);
+    graph2 = {
+        {0, 0, 0, 1},
+        {0, 0, 0, 1},
+        {1, 0, 0, 0},
+        {1, 0, 0, 0}};
+    g2.loadGraph(graph2, 1);
+    CHECK((g1 < g2) == TRUE);
+    CHECK((g1 <= g2) == TRUE);
+    CHECK((g1 > g2) == FALSE);
+    CHECK((g1 >= g2) == FALSE);
 }
 
 TEST_CASE("Test graph addition/subtraction")
@@ -76,12 +105,22 @@ TEST_CASE("Test graph addition/subtraction")
         {2, 0, 3},
         {1, 3, 0}};
     eg.loadGraph(expectedGraph, 0);
-    CHECK((g3 == eg) == TRUE);
-    CHECK((g2 == eg-g1) == TRUE);
-    CHECK((g1 == eg-g2) == TRUE);
-    CHECK((g2*0 == g2-g2) == TRUE);
-    CHECK((g2*-1 == -g2) == TRUE);
-    CHECK((g2 == g2*2 - g2) == TRUE);
+    CHECK((g3).equal(eg) == TRUE);
+    CHECK((g2).equal(eg-g1) == TRUE);
+    CHECK((g1).equal(eg-g2) == TRUE);
+    CHECK((g2*0).equal(g2-g2) == TRUE);
+    CHECK((g2*-1).equal(-g2) == TRUE);
+    CHECK((g2).equal(+g2) == TRUE);
+    CHECK((g2).equal(g2*2 - g2) == TRUE);
+    expectedGraph = {
+        {0, 2, 0},
+        {2, 0, 2},
+        {0, 2, 0}};
+    eg.loadGraph(expectedGraph, 0);
+    CHECK((g1++).equal(eg) == TRUE);
+    CHECK((g1).equal(eg--) == TRUE);
+    CHECK((++g1).equal(eg) == TRUE);
+    CHECK((--g1).equal(eg--) == TRUE);
 }
 
 TEST_CASE("Test graph multiplication")
@@ -102,14 +141,20 @@ TEST_CASE("Test graph multiplication")
         {1, 0, 1},
         {1, 0, 0}};
     eg.loadGraph(expectedGraph, 1);
-    CHECK((g3 == eg) == TRUE);
+    CHECK((g3).equal(eg) == TRUE);
     expectedGraph = {
         {0, 2, 0},
         {2, 0, 2},
         {0, 2, 0}};
     eg.loadGraph(expectedGraph, 0);
-    CHECK((g1*2 == eg) == TRUE);
-    CHECK((g1 == eg/2) == TRUE);
+    CHECK((g1*2).equal(eg) == TRUE);
+    CHECK((2*g1).equal(eg) == TRUE);
+    CHECK((g1).equal(eg/2) == TRUE);
+    g1.loadGraph(graph1, 0);
+    CHECK((g1*=2).equal(eg) == TRUE);
+    CHECK((g1/=2).equal(eg/2) == TRUE);
+    CHECK(((3*g1)/2).equal(g1) == TRUE);     // checks 3%2=1 as we defined
+    CHECK(((3*g1)/=2).equal(g1) == TRUE);
 }
 
 TEST_CASE("Invalid operations")

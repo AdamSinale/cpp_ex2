@@ -29,6 +29,7 @@ namespace ariel {
         void loadGraph(const vector<vector<int>> graph, int isDirected);
         void check_2_graphs(const Graph& g1,const Graph& g2) const; 
         string printGraph();
+        friend std::ostream& operator<<(std::ostream& os, Graph& g);
         Graph operator+(const Graph& other) const;
         Graph& operator+=(const Graph& other);
         Graph operator+() const;
@@ -36,21 +37,22 @@ namespace ariel {
         Graph& operator-=(const Graph& other);
         Graph operator-() const;
         int contains(const Graph& contained) const;
+        int equal(const Graph& g2) const;
         int operator>(const Graph& other);
-        int operator>=(const Graph& other);
         int operator<(const Graph& other);
         int operator<=(const Graph& other);
+        int operator>=(const Graph& other);
         int operator==(const Graph& other);
         int operator!=(const Graph& other);
         Graph& operator++();
+        Graph operator++(int a);
         Graph& operator--();
+        Graph operator--(int a);
         Graph operator*(int a) const;
         Graph operator*(const Graph& other);
         friend Graph operator*(int a, const Graph& main);
         Graph& operator*=(int a);
         Graph operator/(int a) const;
         Graph& operator/=(int a);
-        friend Graph operator/(int a, const Graph& main);
     };
-
 }

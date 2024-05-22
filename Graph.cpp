@@ -71,6 +71,10 @@ namespace ariel {
         }
         return graphS;
     }
+    std::ostream& operator<<(std::ostream& os, Graph& g) {
+        os << g.printGraph();
+        return os;
+    }
 
     Graph Graph::operator+(const Graph& other) const{
         Graph main(*this);
@@ -130,21 +134,38 @@ namespace ariel {
     }
     
     int Graph::contains(const Graph& contained) const{
+        if(getNumV() < contained.getNumV()){ return FALSE; }
         for(unsigned i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
-                if(getEdge(i,j) == 0 && contained.getEdge(i,j) != 0){
+                if((getEdge(j,i) == 0 && contained.getEdge(j,i) != 0)||(getEdge(i,j) == 0 && contained.getEdge(i,j) != 0)){
                     return FALSE;
                 }
             }
         }
         return TRUE;
     }
+    int Graph::equal(const Graph& other) const{
+        Graph main(*this);
+        try{
+            check_2_graphs(main, other);
+            for(unsigned i=0; i<getNumV(); i++){
+                for (unsigned int j=0; j<getNumV(); j++){
+                    if(mat[i][j] != other.mat[i][j]){
+                        return FALSE;
+                    }
+                }
+            }
+            return TRUE;
+        }
+        catch(std::invalid_argument){ return FALSE; }
+    }
     int Graph::operator==(const Graph& other){
         Graph main(*this);
-        check_2_graphs(main, other);
+        if(getNumV() != other.getNumV()){ return FALSE; }
         for(unsigned i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
-                if((mat[i][j]!=0 && other.mat[i][j]==0) || (mat[i][j]==0 && other.mat[i][j]!=0)){
+                if((mat[i][j]!=0 && other.mat[i][j]==0) || (mat[i][j]==0 && other.mat[i][j]!=0)
+                || (mat[j][i]!=0 && other.mat[j][i]==0) || (mat[j][i]==0 && other.mat[j][i]!=0)){
                     return FALSE;
                 }
             }
@@ -158,9 +179,10 @@ namespace ariel {
     }
     int Graph::operator>(const Graph& other){
         Graph main(*this);
-        check_2_graphs(main, other);
-        if(main == other){ return FALSE; }
-        if(main.contains(other) == TRUE){ return TRUE; }
+        if(main.contains(other) == TRUE){
+            if(other.contains(main) == TRUE){ return FALSE; }
+            return TRUE;
+        }
         if(main.getNumE() > other.getNumE()){ return TRUE; }
         if(main.getNumE() < other.getNumE()){ return FALSE; }
         if(main.getNumV() > other.getNumV()){ return TRUE; }
@@ -168,13 +190,13 @@ namespace ariel {
     }
     int Graph::operator>=(const Graph& other){
         Graph main(*this);
-        if(main < other){ return FALSE; }
-        return TRUE;
+        if(main > other || main==other){ return TRUE; }
+        return FALSE;
     }
     int Graph::operator<(const Graph& other){
         Graph main(*this);
-        if(main > other || main == other){ return FALSE; }
-        return TRUE;
+        Graph otherG(other);
+        return otherG > main;
     }
     int Graph::operator<=(const Graph& other){
         Graph main(*this);
@@ -191,6 +213,10 @@ namespace ariel {
         }
         return *this;
     }
+    Graph Graph::operator++(int a){
+        Graph temp(*this);
+        return ++temp;
+    }
     Graph& Graph::operator--(){
         for (unsigned int i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
@@ -200,6 +226,10 @@ namespace ariel {
             }
         }
         return *this;
+    }
+    Graph Graph::operator--(int a){
+        Graph temp(*this);
+        return --temp;
     }
     Graph Graph::operator*(int a) const{
         Graph newG;
@@ -248,7 +278,7 @@ namespace ariel {
         }
         return *this;
     }
-    Graph operator*(int a, Graph& graph) {
+    Graph operator*(int a, const Graph& graph) {
         return graph * a; 
     }
     Graph Graph::operator/(int a) const{
