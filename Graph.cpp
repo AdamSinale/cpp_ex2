@@ -43,7 +43,7 @@ namespace ariel {
         }
         if(!isDirected){
             for(unsigned int i=0; i<graph.size(); i++){
-                for(unsigned int j=0; j<graph.size(); j++){
+                for(unsigned int j=i; j<graph.size(); j++){
                     if(graph[j][i] != graph[i][j]){
                         throw std::invalid_argument("Invalid graph: Cant be not directed");
                     }
@@ -54,19 +54,27 @@ namespace ariel {
         directed = isDirected;
     }
 
-    void Graph::printGraph(){
-        unsigned int numV = mat.size();
-        int count = 0;
-        for(unsigned int i=0; i<numV; i++){
-            for(unsigned int j=0; j<numV; j++){
-                if(mat[i][j] > 0){ count++; }
-            }
-            cout << "Graph with " << numV << " vertices and " << count << " edges." << endl;
-        }
+    void Graph::check_2_graphs(const Graph& g1,const Graph& g2) const{
+        if(g1.getNumV() != g2.getNumV()){ throw std::invalid_argument("graphs are not of the same size"); }
+        if(g1.isDirected() != g2.isDirected()){ throw std::invalid_argument("one is directed and the other isn't"); }
     }
 
-    Graph& Graph::operator+(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+    string Graph::printGraph(){
+        unsigned int numV = mat.size();
+        string graphS = "";
+        for(unsigned int i=0; i<numV; i++){
+            graphS += "[";
+            for(unsigned int j=0; j<numV-1; j++){
+                graphS += to_string(mat[i][j]) + ", ";
+            }
+            graphS += to_string(mat[i][numV-1]) + "]\n";
+        }
+        return graphS;
+    }
+
+    Graph Graph::operator+(const Graph& other) const{
+        Graph main(*this);
+        check_2_graphs(main, other);
         Graph newG;
         newG.loadGraph(mat, isDirected());
         for (unsigned int i=0; i<getNumV(); i++){
@@ -77,7 +85,8 @@ namespace ariel {
         return newG;
     }
     Graph& Graph::operator+=(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+        Graph main(*this);
+        check_2_graphs(main, other);
         for (unsigned int i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
                 mat[i][j] += other.mat[i][j];
@@ -88,8 +97,9 @@ namespace ariel {
     Graph Graph::operator+() const{
         return *this;
     }
-    Graph& Graph::operator-(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+    Graph Graph::operator-(const Graph& other) const{
+        Graph main(*this);
+        check_2_graphs(main, other);
         Graph newG;
         newG.loadGraph(mat, isDirected());
         for(unsigned int i=0; i<getNumV(); i++){
@@ -100,7 +110,8 @@ namespace ariel {
         return newG;
     }
     Graph& Graph::operator-=(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+        Graph main(*this);
+        check_2_graphs(main, other);
         for(unsigned int i=0; i<getNumV(); i++){
             for(unsigned int j=0; j<getNumV(); j++){
                 mat[i][j] -= other.mat[i][j];
@@ -121,7 +132,7 @@ namespace ariel {
     int Graph::contains(const Graph& contained) const{
         for(unsigned i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
-                if(getEdge(i,j) != contained.getEdge(i,j) && contained.getEdge(i,j) != 0){
+                if(getEdge(i,j) == 0 && contained.getEdge(i,j) != 0){
                     return FALSE;
                 }
             }
@@ -129,10 +140,11 @@ namespace ariel {
         return TRUE;
     }
     int Graph::operator==(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+        Graph main(*this);
+        check_2_graphs(main, other);
         for(unsigned i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
-                if(mat[i][j] != other.mat[i][j]){
+                if((mat[i][j]!=0 && other.mat[i][j]==0) || (mat[i][j]==0 && other.mat[i][j]!=0)){
                     return FALSE;
                 }
             }
@@ -146,12 +158,12 @@ namespace ariel {
     }
     int Graph::operator>(const Graph& other){
         Graph main(*this);
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+        check_2_graphs(main, other);
+        if(main == other){ return FALSE; }
         if(main.contains(other) == TRUE){ return TRUE; }
-        if(main.contains(other) == TRUE){ return FALSE; }
         if(main.getNumE() > other.getNumE()){ return TRUE; }
         if(main.getNumE() < other.getNumE()){ return FALSE; }
-        // if(main.seder_godel() > other.seder_godel()){ reuturn TRUE; }
+        if(main.getNumV() > other.getNumV()){ return TRUE; }
         return FALSE;
     }
     int Graph::operator>=(const Graph& other){
@@ -189,27 +201,76 @@ namespace ariel {
         }
         return *this;
     }
-    Graph& Graph::operator*(int a){
+    Graph Graph::operator*(int a) const{
+        Graph newG;
+        newG.loadGraph(mat, isDirected());
         for (unsigned int i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
                 if(getEdge(i,j)!=0){
+                    newG.mat[i][j] *= a;
+                }
+            }
+        }
+        return newG;
+    }
+    Graph Graph::operator*(const Graph& other){
+        Graph main(*this);
+        check_2_graphs(main, other);
+        Graph newG;
+        newG.mat.resize(getNumV(), vector<int>(getNumV(),isDirected()));
+        for (unsigned int i=0; i<getNumV(); i++){
+            for (unsigned int j=0; j<getNumV(); j++){
+                if(j != i){
+                    for (unsigned int k=0; k<getNumV(); k++){
+                        newG.mat[i][j] += mat[i][k]*other.mat[k][j];
+                    }
+                }
+            }
+        }
+        if(isDirected() == FALSE){
+            for(unsigned int i=0; i<getNumV(); i++){
+                for(unsigned int j=i; j<getNumV(); j++){
+                    if(newG.mat[j][i] != newG.mat[i][j]){
+                        newG.loadGraph(newG.mat, TRUE);
+                    }
+                }
+            }
+        }
+        return newG;
+    }
+    Graph& Graph::operator*=(int a) {
+        for (unsigned int i = 0; i < getNumV(); i++) {
+            for (unsigned int j = 0; j < getNumV(); j++) {
+                if (getEdge(i, j) != 0) {
                     mat[i][j] *= a;
                 }
             }
         }
         return *this;
     }
-    Graph Graph::operator*(const Graph& other){
-        if(getNumV() != other.getNumV() || isDirected() != other.isDirected()){ throw std::invalid_argument("graphs are not of the same size"); }
+    Graph operator*(int a, Graph& graph) {
+        return graph * a; 
+    }
+    Graph Graph::operator/(int a) const{
         Graph newG;
-        newG.mat.resize(getNumV(), vector<int>(getNumV(),0));
+        newG.loadGraph(mat, isDirected());
         for (unsigned int i=0; i<getNumV(); i++){
             for (unsigned int j=0; j<getNumV(); j++){
-                for (unsigned int k=0; k<getNumV(); k++){
-                    newG.mat[i][j] += mat[i][k]*other.mat[k][j];
+                if(getEdge(i,j)!=0){
+                    newG.mat[i][j] /= a;
                 }
             }
         }
         return newG;
+    }
+    Graph& Graph::operator/=(int a) {
+        for (unsigned int i = 0; i < getNumV(); i++) {
+            for (unsigned int j = 0; j < getNumV(); j++) {
+                if (getEdge(i, j) != 0) {
+                    mat[i][j] /= a;
+                }
+            }
+        }
+        return *this;
     }
 }
