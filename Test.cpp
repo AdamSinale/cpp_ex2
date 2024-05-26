@@ -157,7 +157,7 @@ TEST_CASE("Test graph multiplication")
     CHECK(((3*g1)/=2).equal(g1) == TRUE);
 }
 
-TEST_CASE("Invalid operations")
+TEST_CASE("Prints and Invalid operations")
 {
     graph1 = {
         {0, 1, 0},
@@ -187,6 +187,9 @@ TEST_CASE("Invalid operations")
         {0, 0, 1, 0, 1},
         {1, 0, 0, 1, 0}};
     g3.loadGraph(graph3, 0);
+    CHECK((g3+g3).printGraph() == "[0, 2, 0, 0, 2]\n[2, 0, 2, 0, 0]\n[0, 2, 0, 2, 0]\n[0, 0, 2, 0, 2]\n[2, 0, 0, 2, 0]\n");
+    CHECK((g3-g3).printGraph() == "[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n");
+    CHECK((g3-g3).printGraph() != "[0, 1, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n[0, 0, 0, 0, 0]\n");
     CHECK_THROWS(g1 + g3);
 }
 
