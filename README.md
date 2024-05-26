@@ -24,7 +24,7 @@ Will print to the stream the values of the matrix the following way:
 
 \[V21, V22, ..., V2n\]
 
-\         ...        ]
+\[        ...       \]
 
 \[Vn1, Vn2, ..., Vnn\]
 
@@ -94,6 +94,50 @@ Creates a new Graph with the values of the given one deviding each of its cells'
 
 Devides each of the cells' values in the existing Graph by the int
 
+**Graph1.equal(Graph2) :**
+
+Will require Graphs with the same number of vertixes and both beeing directed/undirected
+Will return 1 if Graph1 and Graph2 are identical even in their weights of edges
+0 in any graph there is an edge where in the other there isnt or their weights are different.
+
+**Graph1 == Graph2 :**
+
+Will return 1 if Graph1 and Graph2 have the same edges between the same vertices, no matter their weight
+0 in any graph there is an edge where in the other there isnt.
+graphs and undirected graphs can be compared too but if in a directed graph there is an edge in one way while in an undirected graph its defaultly 2 ways, they aren't equal
+
+**Graph1 != Graph2 :**
+
+Will return 1 if anywhere in one's Graph there is an edge not existing in the other Graph.
+Will return 0 if Graph1 == Graph2
+
+**Graph1.contains(Graph2) :**
+
+Will return 1 if every edge in Graph2 exists in Graph1, no matter their weights.
+Will return 0 if there is an edge in Graph2 that doesnt exist in Graph1, even if its a one way direction missing.
+
+**Graph1 > Graph2 :**
+
+Will return 1 if Graph1 contains the Graph2 but not the opposite, has more edges than the graph, or has more vertices than it.
+0 it doesnt contain it, and doesn't have more edges or vertices than him
+
+**Graph1 >= Graph2 :**
+
+Will return 1 if Graph1 contains the Graph2, has more edges than the graph, or has more vertices than it.(if they contain eachother they are equal and still true)
+0 it doesnt contain it, and doesn't have more edges or vertices than him
+
+**Graph1 < Graph2 :**
+
+Will return 1 if Graph2 contains the Graph1 but not the opposite, has more edges than the graph, or has more vertices than it.
+0 it doesnt contain it, and doesn't have more edges or vertices than him
+
+**Graph1 <= Graph2 :**
+
+Will return 1 if Graph2 contains the Graph1, has more edges than the graph, or has more vertices than it.(if they contain eachother they are equal and still true)
+0 it doesnt contain it, and doesn't have more edges or vertices than him
+
+
+---
 
 **Constructor: Graph():**
 
@@ -122,6 +166,7 @@ Checks wether the given verices exist in the graph.
 **printGraph():**
 
 Prints the graph's info- num of vertices and edges.
+
 
 ## Algorithms Library
 
