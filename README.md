@@ -19,11 +19,14 @@ Sending a matrix with different weights on each side of an edge will return an E
 **cout << Graph :**
 
 Will print to the stream the values of the matrix the following way:
-\[V11, V12, ..., V1n\]
-\[V21, V22, ..., V2n\]
-\         ...        ]
-\[Vn1, Vn2, ..., Vnn\]
 
+\[V11, V12, ..., V1n\]
+
+\[V21, V22, ..., V2n\]
+
+\         ...        ]
+
+\[Vn1, Vn2, ..., Vnn\]
 
 
 **Graph + Graph :**
