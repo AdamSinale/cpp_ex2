@@ -16,8 +16,18 @@ Sending a matrix with different weights on each side of an edge will return an E
 
 ## basic operators:
 
+**cout << Graph :**
+
+Will print to the stream the values of the matrix the following way:
+\[V11, V12, ..., V1n\]
+\[V21, V22, ..., V2n\]
+\         ...        ]
+\[Vn1, Vn2, ..., Vnn\]
+
+
+
 **Graph + Graph :**
----
+
 Will allow only graphs of the same type(directed or undirected).
 Creates a new Graph adding each one cell's value to its parallel cell in the other graph and inserts the summed value to the new graph.
 
@@ -59,6 +69,27 @@ Removes from each cell of the existing Graph 1.
 **-Graph :**
 
 Will return the graph after turing each positive value to its negative counterpart and the opposite( multiplying each value by -1).
+
+**Graph * int  /  int * Graph :**
+
+Creates a new Graph with the values of the given one multiplying each of its cells' values by the int
+
+**Graph \*= int :**
+
+Multiplies each of the cells' values in the existing Graph by the int
+
+**Graph * Graph :**
+
+Won't allow Graphs of different sizes.
+Basic Graphs multipication, multiplying the i-th value of each row bythe i-th value of each column and adding them. Repeat this for all column and row combination.
+
+**Graph \ int :**
+
+Creates a new Graph with the values of the given one deviding each of its cells' values by the int
+
+**Graph \= int :**
+
+Devides each of the cells' values in the existing Graph by the int
 
 
 **Constructor: Graph():**
