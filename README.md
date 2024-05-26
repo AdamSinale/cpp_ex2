@@ -17,7 +17,7 @@ Sending a matrix with different weights on each side of an edge will return an E
 ## basic operators:
 
 **Graph + Graph :**
-
+---
 Will allow only graphs of the same type(directed or undirected).
 Creates a new Graph adding each one cell's value to its parallel cell in the other graph and inserts the summed value to the new graph.
 
